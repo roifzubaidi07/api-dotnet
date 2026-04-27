@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using api_pertama.Data;
 using api_pertama.Models;
+using api_pertama.Dtos;
 
 namespace api_pertama.Endpoints;
 
@@ -19,6 +20,22 @@ public static class HobbyEndpoints
 
             hobby.UserId = userId;
             db.Hobbies.Add(hobby);
+            await db.SaveChangesAsync();
+
+            return Results.Ok(hobby);
+        });
+
+        app.MapPut("/users/{userId}/hobbies/{id}", async (
+            int userId,
+            int id,
+            UpdateHobbyDto dto,
+            AppDbContext db) =>
+        {
+            var hobby = await db.Hobbies.FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
+            if (hobby is null)
+                return Results.NotFound();
+
+            hobby.Name = dto.Name;
             await db.SaveChangesAsync();
 
             return Results.Ok(hobby);

@@ -42,5 +42,19 @@ public static class UserEndpoints
                 ? Results.NotFound()
                 : Results.Ok(user);
         });
+
+        app.MapPut("/users/{id}", async (int id, UpdateUserDto dto, AppDbContext db) =>
+        {
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user is null)
+                return Results.NotFound();
+
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+            user.Age = dto.Age;
+
+            await db.SaveChangesAsync();
+            return Results.Ok(user);
+        });
     }
 }

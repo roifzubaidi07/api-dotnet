@@ -5,7 +5,7 @@ using api_pertama.Endpoints;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(
+    opt.UseNpgsql(
         builder.Configuration.GetConnectionString("Default")
     ));
 
